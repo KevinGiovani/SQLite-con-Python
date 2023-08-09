@@ -1,5 +1,51 @@
 import sqlite3
 
+def consultar_datos_id(cursor,id):
+    """
+    Realiza la consulta de datos a partir de un ID ingresado
+    como parametro
+
+    Args:
+        cursor (sqlite3.Cursor): Cursor para operaciones
+        id (_type_): Identificador de una fila de datos en 'usuarios'
+
+    Returns:
+        sqlite3.Cursor: Fila de los datos consultados por ID
+    """
+    sentencia = f"SELECT usuario,email FROM usuarios WHERE id={id}"
+    resultado = cursor.execute(sentencia)
+    return resultado
+
+def consultar_datos02(cursor):
+    """
+    Realiza la consulta de datos especificos dentro de la tabla 'usuarios' 
+    con limite de 3 columnas
+
+    Args:
+        cursor (sqlite3.Cursor): Cursor para operaciones
+    """
+    sentencia = "SELECT id,usuario,email FROM usuarios LIMIT 3"
+    resultado = cursor.execute(sentencia)
+    return resultado
+
+def consultar_datos01(cursor):
+    """
+    Realiza la consulta de todos los datos de la tabla 'usuarios'
+    
+    Args:
+        cursor (sqlite3.Cursor): Cursor para operaciones
+    """
+    sentencia = "SELECT * FROM usuarios"
+    resultado = cursor.execute(sentencia)
+    # print(cursor.fetchall()) # Devuelve todas las filas de una consulta
+    # print(cursor.fetchone()) # Devuelve unicamente una fila
+    # print(cursor.fetchmany(3)) # Recibe como argumento un número para las filas máximas al recorrer consultas.
+    # print(resultado)
+    
+    for fila in resultado:
+        print(fila)
+        
+
 def insertar_datos(conexion, cursor, datos):
     """
     Inserción de datos dentro de la BDD
@@ -17,7 +63,7 @@ def insertar_datos(conexion, cursor, datos):
     #cursor.execute(sentencia)
     print("Datos insertados correctamente")
     conexion.commit() # Guardar los cambios
-    conexion.close()
+    #conexion.close()
     
 
 def crear_tabla(conexion,cursor):
@@ -37,7 +83,7 @@ def crear_tabla(conexion,cursor):
         clave TEXT NOT NULL)
     """
     cursor.execute(sentencia)
-    conexion.close()
+    #conexion.close()
     print("Tabla creada correctamente")
 
 def conectar():
@@ -62,4 +108,20 @@ if __name__ == '__main__':
     datos = [('Yolanda', 'yolanda@gmail.com', 'y0l4A'),
              ('Esteban','esteban@gmail.com', 'eSt001'),
              ('Andrea','andrea@gmail.com', 'And550B')]
-    insertar_datos(conexion, cursor, datos)
+    # insertar_datos(conexion, cursor, datos)
+    
+    print("CONSULTAS:\n'SELECT * FROM usuarios':")
+    consultar_datos01(cursor)
+    
+    print("\n'SELECT id, usuario, email FROM usuarios':")
+    resultado = consultar_datos02(cursor)
+    for fila in resultado:
+        print("ID:", fila[0], end=" ")
+        print("Usuario:", fila[1], end=" ")
+        print("Email:", fila[2])
+    
+    print("\nConsultar por ID:\n'SELECT usuario,email FROM usuarios WHERE id=4'")
+    resultado = consultar_datos_id(cursor,4)
+    for fila in resultado:
+        print(fila)
+    conexion.close()
