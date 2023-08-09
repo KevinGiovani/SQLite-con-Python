@@ -1,19 +1,33 @@
 import sqlite3
 
+def borrar_datos(conexion, cursor, id):
+    """
+    Eliminación de un registro a partir del identificador de un usuario
+
+    Args:
+        conexion (sqlite3.Connection): Actualización de la BDD
+        cursor (sqlite3.Cursor): Cursor para la operación DELETE
+        id (int): Identificador del registro a eliminar
+    """
+    sentencia = f"DELETE FROM usuarios WHERE id={id}"
+    cursor.execute(sentencia)
+    conexion.commit()
+    print(f"Datos eliminados correctamente con ID={id}")
+
 def actualizar_datos(conexion,cursor,usuario,id):
     """
     Modificación de datos(nombre del usuario) a partir del ID ingresado
     
     Args:
-        conexion (sqlite3.Connection): Conexión a la BDD
-        cursor (sqlite3.Cursor): Cursor para operaciones
+        conexion (sqlite3.Connection): Actualización de la BDD
+        cursor (sqlite3.Cursor): Cursor para la operación UPDATE
         usuario (str): Nuevo nombre del usuario
-        id (int): Identificador del usuario al que se realizara el cambio
+        id (int): Identificador del registro al que se realizara el cambio
     """
     sentencia = f"UPDATE usuarios SET usuario='{usuario}' WHERE id={id}"
     cursor.execute(sentencia)
     conexion.commit()
-    print(f"\nDato actualizo de la fila con ID:{id}")
+    print(f"\nDato actualizo de la fila con ID={id}")
     
 def mostrar_datos(datos):
     """
@@ -31,8 +45,8 @@ def consultar_datos_id(cursor,id):
     como parametro
 
     Args:
-        cursor (sqlite3.Cursor): Cursor para operaciones
-        id (_type_): Identificador de una fila de datos en 'usuarios'
+        cursor (sqlite3.Cursor): Cursor para la operación SELECT
+        id (int): Identificador de un registro en 'usuarios'
 
     Returns:
         sqlite3.Cursor: Fila de los datos consultados por ID
@@ -47,7 +61,7 @@ def consultar_datos02(cursor):
     con limite de 3 columnas
 
     Args:
-        cursor (sqlite3.Cursor): Cursor para operaciones
+        cursor (sqlite3.Cursor): Cursor para la operacion SELECT
     """
     sentencia = "SELECT id,usuario,email FROM usuarios LIMIT 3"
     resultado = cursor.execute(sentencia)
@@ -58,7 +72,7 @@ def consultar_datos01(cursor):
     Realiza la consulta de todos los datos de la tabla 'usuarios'
     
     Args:
-        cursor (sqlite3.Cursor): Cursor para operaciones
+        cursor (sqlite3.Cursor): Cursor para la operacion SELECT
     """
     sentencia = "SELECT * FROM usuarios"
     resultado = cursor.execute(sentencia)
@@ -72,8 +86,8 @@ def insertar_datos(conexion, cursor, datos):
     """
     Inserción de datos dentro de la BDD
     Args:
-        conexion (sqlite3.Connection): Conexión a la BDD
-        cursor (sqlite3.Cursor): Cursor para operaciones
+        conexion (sqlite3.Connection): Actualización de la BDD
+        cursor (sqlite3.Cursor): Cursor para la operación INSERT
         datos (list): Valores a agregar usando la sentencia
     """
     # Diferentes formas de realizar la inserción de datos en la tabla
@@ -87,14 +101,13 @@ def insertar_datos(conexion, cursor, datos):
     conexion.commit() # Guardar los cambios
     #conexion.close()
     
-def crear_tabla(conexion,cursor):
+def crear_tabla(cursor):
     """
     Creación de una tabla en caso de que no exista dentro de la base de datos
     a partir de la ejecución de una sentencia de tipo 'create table'
 
     Args:
-        conexion (sqlite3.Connection): Conexión a la BDD
-        cursor (sqlite3.Cursor): Cursor para operaciones
+        cursor (sqlite3.Cursor): Cursor para la operación CREATE
     """
     sentencia = """
         CREATE TABLE IF NOT EXISTS usuarios
@@ -145,5 +158,7 @@ if __name__ == '__main__':
     mostrar_datos(consultar_datos_id(cursor,4))
     
     actualizar_datos(conexion,cursor,"Armando", 1)
+    
+    # borrar_datos(conexion,cursor,2)
 
     conexion.close()
