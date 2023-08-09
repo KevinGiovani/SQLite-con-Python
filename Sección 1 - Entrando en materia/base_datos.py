@@ -1,5 +1,30 @@
 import sqlite3
 
+def actualizar_datos(conexion,cursor,usuario,id):
+    """
+    Modificación de datos(nombre del usuario) a partir del ID ingresado
+    
+    Args:
+        conexion (sqlite3.Connection): Conexión a la BDD
+        cursor (sqlite3.Cursor): Cursor para operaciones
+        usuario (str): Nuevo nombre del usuario
+        id (int): Identificador del usuario al que se realizara el cambio
+    """
+    sentencia = f"UPDATE usuarios SET usuario='{usuario}' WHERE id={id}"
+    cursor.execute(sentencia)
+    conexion.commit()
+    print(f"\nDato actualizo de la fila con ID:{id}")
+    
+def mostrar_datos(datos):
+    """
+    Muestra los datos por fila en la terminal
+    
+    Args:
+        datos (list): _description_
+    """
+    for fila in datos:
+        print(fila)
+    
 def consultar_datos_id(cursor,id):
     """
     Realiza la consulta de datos a partir de un ID ingresado
@@ -41,18 +66,15 @@ def consultar_datos01(cursor):
     # print(cursor.fetchone()) # Devuelve unicamente una fila
     # print(cursor.fetchmany(3)) # Recibe como argumento un número para las filas máximas al recorrer consultas.
     # print(resultado)
-    
-    for fila in resultado:
-        print(fila)
+    return resultado
         
-
 def insertar_datos(conexion, cursor, datos):
     """
     Inserción de datos dentro de la BDD
     Args:
         conexion (sqlite3.Connection): Conexión a la BDD
         cursor (sqlite3.Cursor): Cursor para operaciones
-        datos (_type_): Valores a agregar usando la sentencia
+        datos (list): Valores a agregar usando la sentencia
     """
     # Diferentes formas de realizar la inserción de datos en la tabla
     # sentencia =  " INSERT INTO usuarios (usuario, email, clave) VALUES ("Rodrigo", "Rodrigo@gmail.com", "ROD44") "
@@ -65,7 +87,6 @@ def insertar_datos(conexion, cursor, datos):
     conexion.commit() # Guardar los cambios
     #conexion.close()
     
-
 def crear_tabla(conexion,cursor):
     """
     Creación de una tabla en caso de que no exista dentro de la base de datos
@@ -111,7 +132,7 @@ if __name__ == '__main__':
     # insertar_datos(conexion, cursor, datos)
     
     print("CONSULTAS:\n'SELECT * FROM usuarios':")
-    consultar_datos01(cursor)
+    mostrar_datos(consultar_datos01(cursor))
     
     print("\n'SELECT id, usuario, email FROM usuarios':")
     resultado = consultar_datos02(cursor)
@@ -121,7 +142,8 @@ if __name__ == '__main__':
         print("Email:", fila[2])
     
     print("\nConsultar por ID:\n'SELECT usuario,email FROM usuarios WHERE id=4'")
-    resultado = consultar_datos_id(cursor,4)
-    for fila in resultado:
-        print(fila)
+    mostrar_datos(consultar_datos_id(cursor,4))
+    
+    actualizar_datos(conexion,cursor,"Armando", 1)
+
     conexion.close()
